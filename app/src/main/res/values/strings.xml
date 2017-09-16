@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Bookshelf</string>
+    <string name="home_label">Library</string>
+    <string name="book_title">As Time goes bys</string>
+    <string name="book_author">Mary Higgins Clark</string>
+    <string name="instructions">
+        "Type a keyword in the search area and get a list of book from all over the world"
+    </string>
+    <string name="search_text">Search keywords</string>
+</resources>
