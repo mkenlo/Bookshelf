@@ -1,46 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <ImageView
         android:id="@+id/thumbnail"
-        android:layout_width="96dp"
-        android:layout_height="128dp"
-        android:src="@drawable/placeholder"
-        android:contentDescription="book thumbnail"
-        android:scaleType="centerCrop"
-        android:layout_alignParentTop="true"
+        android:layout_width="@dimen/thumbnail_width"
+        android:layout_height="@dimen/thumbnail_height"
         android:layout_alignParentLeft="true"
-        android:padding="@dimen/small_spacing"/>
-
-    <TextView
-        android:id="@+id/book_author"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_toRightOf="@id/thumbnail"
-        android:layout_toEndOf="@id/thumbnail"
-        android:text="@string/book_author"
-        android:textSize="@dimen/title"
-        android:textStyle="bold"
-        android:textAllCaps="true"
-        android:padding="@dimen/medium_spacing"
-        android:paddingBottom="@dimen/medium_spacing"/>
+        android:contentDescription="book thumbnail"
+        android:padding="@dimen/small_spacing"
+        android:scaleType="centerCrop" />
 
     <TextView
         android:id="@+id/book_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/book_author"
-        android:layout_toRightOf="@id/thumbnail"
+        android:layout_alignParentTop="true"
         android:layout_toEndOf="@id/thumbnail"
+        android:layout_toRightOf="@id/thumbnail"
+        android:paddingBottom="@dimen/small_spacing"
+        android:paddingLeft="@dimen/medium_spacing"
+        android:paddingTop="@dimen/medium_spacing"
         android:text="@string/book_title"
-        android:paddingLeft="@dimen/small_spacing"
-        android:paddingBottom="@dimen/small_spacing"/>
+        android:textAllCaps="true"
+        android:textSize="@dimen/title"
+        android:textStyle="bold" />
 
-
-
+    <TextView
+        android:id="@+id/book_author"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/book_title"
+        android:layout_toEndOf="@id/thumbnail"
+        android:layout_toRightOf="@id/thumbnail"
+        android:paddingBottom="@dimen/small_spacing"
+        android:paddingLeft="@dimen/medium_spacing"
+        android:text="@string/book_author" />
 
 
 </RelativeLayout>

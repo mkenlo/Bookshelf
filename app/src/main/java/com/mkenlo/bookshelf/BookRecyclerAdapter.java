@@ -17,7 +17,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.InputStream;
-import java.net.URL;
 
 /**
  * Created by Melanie on 9/15/2017.
@@ -43,7 +42,7 @@ public class BookRecyclerAdapter extends RecyclerView.Adapter<BookRecyclerAdapte
     public void onBindViewHolder(BookRecyclerAdapter.ViewHolder holder, int position) {
 
         try {
-            JSONObject book = mBookList.getJSONObject(position);
+            JSONObject book = mBookList.getJSONObject(position).getJSONObject("volumeInfo");
             holder.book_title.setText(book.getString("title"));
             holder.book_author.setText(book.getJSONArray("authors").getString(0));
             DownloadImageTask task = new DownloadImageTask(holder.book_thumbnail);
@@ -87,7 +86,6 @@ public class BookRecyclerAdapter extends RecyclerView.Adapter<BookRecyclerAdapte
                 InputStream in = new java.net.URL(urldisplay).openStream();
                 thumbnail = BitmapFactory.decodeStream(in);
             } catch (Exception e) {
-                Log.e("Error", e.getMessage());
                 e.printStackTrace();
             }
             return thumbnail;
