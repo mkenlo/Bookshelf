@@ -1,17 +1,23 @@
 package com.mkenlo.bookshelf;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.support.design.widget.Snackbar;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -45,38 +51,75 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
 
         instructionText = (TextView) findViewById(R.id.instructions_text);
-        jsonBookList = new JSONArray();
+        if (savedInstanceState != null) {
+            restoreStateBookList(savedInstanceState);
+        } else
+            jsonBookList = new JSONArray();
         searchText = (EditText) findViewById(R.id.search_text);
         searchButton = (ImageButton) findViewById(R.id.search_button);
-        searchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    searchKeyword(searchText.getText().toString());
-                    updateIU();
-                } catch (JSONException ex) {
-                    ex.printStackTrace();
-                }
-
-            }
-        });
-
         recyclerView = (RecyclerView) findViewById(R.id.book_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
         mAdapter = new BookRecyclerAdapter(getBaseContext(), jsonBookList);
         recyclerView.setAdapter(mAdapter);
+
+        if (!isDeviceConnectedToInternet()) {
+            showNotif("Can't reach Network");
+        }
     }
 
-    public void searchKeyword(String keyword) throws JSONException {
-        FetchBookTask fetchBookTask = new FetchBookTask(getBaseContext());
-        fetchBookTask.execute(keyword);
-    }
+    public void searchKeyword(View v) throws JSONException {
+        if (isDeviceConnectedToInternet()) {
+            String keyword = searchText.getText().toString();
+            FetchBookTask fetchBookTask = new FetchBookTask(getBaseContext());
+            fetchBookTask.execute(keyword);
 
+            if (jsonBookList != null) {
+                updateIU();
+            } else {
+                showNotif("NO BOOKS FOUND");
+            }
+        } else {
+            showNotif("Can't reach Network");
+        }
+
+    }
 
     public void updateIU() {
         BookRecyclerAdapter mAdapter = new BookRecyclerAdapter(getBaseContext(), jsonBookList);
         recyclerView.setAdapter(mAdapter);
+    }
+
+    public void showNotif(String msg) {
+        Snackbar snackbar = Snackbar.make(searchButton, msg, Snackbar.LENGTH_LONG);
+        View view = snackbar.getView();
+        view.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+        snackbar.show();
+    }
+
+    public boolean isDeviceConnectedToInternet() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        return (cm.getActiveNetworkInfo() != null) ? true : false;
+    }
+
+    public void restoreStateBookList(Bundle savedInstanceState) {
+        try {
+            jsonBookList = new JSONArray(savedInstanceState.getString("bookList"));
+        } catch (JSONException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("bookList", jsonBookList.toString());
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        restoreStateBookList(savedInstanceState);
     }
 
     public class FetchBookTask extends AsyncTask<String, Void, JSONArray> {

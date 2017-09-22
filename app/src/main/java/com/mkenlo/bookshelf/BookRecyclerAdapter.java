@@ -18,6 +18,8 @@ import org.json.JSONObject;
 
 import java.io.InputStream;
 
+import static android.R.attr.author;
+
 /**
  * Created by Melanie on 9/15/2017.
  */
@@ -43,10 +45,29 @@ public class BookRecyclerAdapter extends RecyclerView.Adapter<BookRecyclerAdapte
 
         try {
             JSONObject book = mBookList.getJSONObject(position).getJSONObject("volumeInfo");
-            holder.book_title.setText(book.getString("title"));
-            holder.book_author.setText(book.getJSONArray("authors").getString(0));
-            DownloadImageTask task = new DownloadImageTask(holder.book_thumbnail);
-            task.execute(book.getJSONObject("imageLinks").getString("smallThumbnail"));
+            if (book.has("title")  ){
+                holder.book_title.setText(book.getString("title"));
+            }
+            if( book.has("authors")){
+                JSONArray jsonAuthors = book.getJSONArray("authors");
+                StringBuilder authors = new StringBuilder();
+                authors.append(jsonAuthors.get(0));
+                for(int i=1;i<jsonAuthors.length(); i++){
+                    authors.append(",");
+                    authors.append(jsonAuthors.get(i));
+
+                }
+                holder.book_author.setText(authors.toString());
+            }
+            else{
+                holder.book_author.setText("Unknown author");
+            }
+            if(book.has("imageLinks")){
+                DownloadImageTask task = new DownloadImageTask(holder.book_thumbnail);
+                task.execute(book.getJSONObject("imageLinks").getString("smallThumbnail"));
+            }
+
+
 
         } catch (JSONException ex) {
             ex.printStackTrace();
